@@ -31,3 +31,13 @@ import config from "../config/config.js";
                 user:{ username: user.username, email: user.email }, token });
  }
 
+ export async function getMe(req, res) {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if(!token){
+    return res.status(401).json({ message: "token not found " });
+  }
+
+  const decoded = jwt.verify(token, config.JWT_SECRET);
+ }
+
