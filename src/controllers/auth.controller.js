@@ -38,6 +38,8 @@ import config from "../config/config.js";
     return res.status(401).json({ message: "token not found " });
   }
 
-  const decoded = jwt.verify(token, config.JWT_SECRET);
+  const decoded = jwt.verify(token, config.JWT_SECRET)
+  const user = await User.findById(decoded.id)
+  res.status(200).json({})
  }
 
