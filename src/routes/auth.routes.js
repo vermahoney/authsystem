@@ -12,4 +12,11 @@ authRouter.post("/register" , authController.register);
 /**GET /api/auth/get-me */
 authRouter.get("/get-me", authController.getMe);
 
+/**
+ * GET/api/auth/refresh-token
+ * 
+ */
+
+
+authRouter.get("/refresh-token", authcontroller.refreshToken)
 export default authRouter;
