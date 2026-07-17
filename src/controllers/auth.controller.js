@@ -2,7 +2,7 @@ import UserModel from "../models/user.model.js";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
-import { sourceMapsEnabled } from "process";
+import sessionModel from "../models/session.model.js";
 
 
 
@@ -68,11 +68,27 @@ import { sourceMapsEnabled } from "process";
    const decoded =jwt.verify(refreshToken,  config.JWT_SECRET)
 
    const accessToken = jwt.sign({
-     id: decoded.id
+     id: decoded.id,
+     sessionId: session._id
    }, config.JWT_SECRET,
    {
     expiresIn:"15m"
    }
+
+   const refreshToken =jwt.sign({
+
+   })
+
+   const refreshTokenHash = crypto.createHash("sha256").update(refreshToken).digest("hex");
+
+
+   const session = await sessionModel.create({
+     userId: user._id,
+     refreshTokenhash,
+     ip:req.ip,
+     userAgent:req.headers["user-agent"]
+
+   })
    
   )
   res.status(200).json({
@@ -80,4 +96,29 @@ import { sourceMapsEnabled } from "process";
      accessToken  
   })
 
+ }
+
+ export async function logout(req, res){
+     const refreshToken =req.cookies.refreshToken;
+     if(!refreshToken){
+        res.status(400).json({
+          message:"refresh Token not found "
+        })
+     }
+     const refreshtokenhash =crypto.createHash("sha256").update(refreshToken).digest("hex");
+
+     const session = await sessionModel.findOne({
+           refreshTokenHash,
+           revoked: false
+     })
+
+     if(!session){
+     return res.status(400).json({
+          message:"Invalid refresh token"
+      })
+     }
+
+     session.revoked = true ;
+     await session.save();
+     
  }
