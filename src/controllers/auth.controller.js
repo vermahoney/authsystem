@@ -42,6 +42,33 @@ import sessionModel from "../models/session.model.js";
                 user:{ username: user.username, email: user.email }, token: accessToken });
  }
 
+ export async function login(req, res){
+    const  {eamil, password } = req.body;
+    const user = await userModel.findOne({
+      email
+    })
+
+    if(!user){
+      res.status(401).json({
+        message:"Invalid email or password "
+      })
+    }
+
+    const hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+    const isPasswordValid = hashpassword === user.passswrod;
+    if(!isPasswordValid){
+      return res.status(401).json({
+        message:"invalid email. or password "
+      })
+    }
+
+    const refreshtoken = jwt.sign({
+      id:user._id
+    }, config.JWT_SECRET,
+    })
+
+ }
+
  export async function getMe(req, res) {
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -120,5 +147,26 @@ import sessionModel from "../models/session.model.js";
 
      session.revoked = true ;
      await session.save();
-     
+
+ }
+
+ export async function logoutAll(req, res){
+    const refreshToken = req.cookies.refreshToken;
+
+    if(!refreshtoken){
+      return res.status(400).json({
+        message: "refresh token not found "
+      })
+    }
+
+    const decoded = jwt.verify(refreshToken, config,JWT_SECRET)
+    await sessionModel.updateMany({
+      user: decoded.id,
+      revoked: false
+      
+
+    },{
+        revoked: true
+    } 
+  ) 
  }
