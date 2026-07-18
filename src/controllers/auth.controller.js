@@ -65,7 +65,48 @@ import sessionModel from "../models/session.model.js";
     const refreshtoken = jwt.sign({
       id:user._id
     }, config.JWT_SECRET,
+    {
+      expiresIn:"7d"
+    }
+
+
+    }
+  )
+  const refreshtoken = crypto.createHash("sha256").update(refreshToken).digest("hex");
+
+   const session = await sessionModel.create({
+    user:user._id,
+    refreshTokenHash,
+    ip:req.ip,
+    userAgent:req.headers["user-agent"]
+   })
+
+   const accessToken=jwtsign({
+    id:user._id,
+    sessionId: session._id
+
+   },config.JWT_SECRET,
+   {
+      expression: "15m"
+   }
+    res.cookie("refreshToken", refreshToken,{
+      httOny: true,
+      secure: true,
+      sameSite:"strict",
+      maxAge:7 * 24 * 60 * 1000 // 7 days
     })
+
+    res.status(200).json({
+      message:"Logged in successfully",
+
+      user:{
+        username: user.username,
+        email: user.email,
+
+      },
+      accessToken,
+    })
+  )
 
  }
 
@@ -170,3 +211,9 @@ import sessionModel from "../models/session.model.js";
     } 
   ) 
  }
+
+ res.clearCookie("refreshToken")
+
+ res.status(200).json({
+  message:"Logged out from all devices successfully "
+ })
