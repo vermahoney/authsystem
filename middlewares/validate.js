@@ -1,4 +1,17 @@
-const joi = require('joi');
-const httpStatus = require('http-status');
-const pick = require('../utils/pick');
-const Apierror=
+import Joi from "joi";
+
+const validate = (schema) => {
+  return (req, res, next) => {
+    const { error } = schema.body.validate(req.body);
+
+    if (error) {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
+
+    next();
+  };
+};
+
+export default validate;
