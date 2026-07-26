@@ -1,7 +1,15 @@
+import mongoose from "mongoose";
 import app from "./app.js";
+import config from "./src/config/config.js";
 
-const PORT = 3000;
+mongoose.connect(config.mongoose.url).then(() => {
+  console.log("Connected to MongoDB");
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+  app.listen(config.port, () => {
+    console.log(`Server running on port ${config.port}`);
+  });
+})
+ .catch((err) => {
+    console.error("mongodb connection failed:", err);
+     process.exit(1);
+  });
