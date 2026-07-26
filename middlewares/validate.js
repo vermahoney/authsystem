@@ -1,14 +1,23 @@
 import Joi from "joi";
+import pick from "../utils/pick.js";
 
 const validate = (schema) => {
   return (req, res, next) => {
-    const { error } = schema.body.validate(req.body);
+    const validSchema = pick(schema, ["params", "query", "body"]);
 
-    if (error) {
-      return res.status(400).json({
-        message: error.message,
-      });
-    }
+    const object = pick(req, Object.keys(validSchema));
+
+    const { value, error } = Joi.compile(validSchema)
+      .prefs({
+        errors: {
+          label: "key",
+        },
+        abortEarly: false,
+      })
+      .validate(object);
+
+    console.log(value);
+    console.log(error);
 
     next();
   };

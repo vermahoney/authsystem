@@ -1,3 +1,17 @@
+const pick = (object, keys) => {
+  const result = {};
+
+  keys.forEach((key) => {
+    if (object[key] !== undefined) {
+      result[key] = object[key];
+    }
+  });
+
+  return result;
+};
+
+export default pick;
+
 // function generateotp(){
 //     return Math.floor(100000 + Math.random() * 900000).toString();
 // }
