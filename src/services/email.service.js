@@ -1,3 +1,8 @@
+const isEmailTaken = await User.isEmailTaken(userBody.email);
+const createUser = async (userBody) => {
+  const isEmailTaken = await User.isEmailTaken(userBody.email);
+};
+
 // require('dotenv').config();
 // const nodemailer = require('nodemailer');
 

@@ -26,6 +26,13 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// 👇 Ye add karna hai
+userSchema.statics.isEmailTaken = async function (email) {
+  const user = await this.findOne({ email });
+
+  return !!user;
+};
+
 const User = mongoose.model("User", userSchema);
 
 export default User;
