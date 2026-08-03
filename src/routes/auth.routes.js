@@ -1,3 +1,18 @@
+import express from "express";
+import validate from "../../middlewares/validate.js";
+import authValidation from "../../validations/auth.validation.js";
+import authController from "../../controllers/auth.controller.js";
+
+
+const router = express.Router();
+
+router.post(
+  "/register",
+  validate(authValidation.register),
+  authController.register
+);
+
+export default router;
 // import {Router} from "express";
 // import * as authController from "../controllers/auth.controller.js";
 

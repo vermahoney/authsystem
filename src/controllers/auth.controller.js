@@ -1,3 +1,15 @@
+import httpStatus from "http-status";
+import catchAsync from "../utils/catchAsync.js";
+import authService from "../services/auth.service.js";
+
+const register = catchAsync(async (req, res) => {
+
+});
+
+export default {
+  register,
+};
+
 // import UserModel from "../models/user.model.js";
 // import crypto from "crypto";
 // import jwt from "jsonwebtoken";
