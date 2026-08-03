@@ -4,8 +4,11 @@ import {
   errorConverter,
   errorHandler,
 } from "./src/middlewares/error.js";
+import routes from "./src/routes/index.js";
 
 const app = express();
+
+app.use("/v1", routes);
 
 app.use("/user", userRoute);
 

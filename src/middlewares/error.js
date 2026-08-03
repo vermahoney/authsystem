@@ -26,5 +26,4 @@ const errorHandler = (err, req, res, next) => {
   });
 };
 
-// Export both middlewares
 export { errorConverter, errorHandler };
