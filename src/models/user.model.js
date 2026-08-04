@@ -34,7 +34,9 @@ const userSchema = new mongoose.Schema(
         "Password must contain at least one letter and one number"
       );
     }
+     
   },
+  private: true,
 },
 
 role: {
@@ -62,6 +64,21 @@ userSchema.statics.isEmailTaken = async function (email) {
 userSchema.methods.isPasswordMatch = async function (password) {
   const user = this;
 
+  return bcrypt.compare(password, user.password);
+};
+
+userSchema.pre("save", async function (next) {
+  const user = this;
+
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(user.password, 8);
+  }
+
+  next();
+});
+
+userSchema.methods.isPasswordMatch = async function (password) {
+  const user = this;
   return bcrypt.compare(password, user.password);
 };
 
