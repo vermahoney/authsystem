@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
+
+import toJSON from "./plugins/toJSON.plugin.js";
+import paginate from "./plugins/paginate.plugin.js";
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -54,6 +57,10 @@ isEmailVerified: {
   }
 );
 
+
+// Plugins
+userSchema.plugin(toJSON);
+userSchema.plugin(paginate);
 // 👇 Ye add karna hai
 userSchema.statics.isEmailTaken = async function (email) {
   const user = await this.findOne({ email });
