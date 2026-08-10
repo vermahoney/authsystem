@@ -2,6 +2,7 @@ import Joi from "joi";
 import httpStatus from "http-status";
 
 import ApiError from "../utils/ApiError.js";
+import pick from "../utils/utils.js";
 
 const validate = (schema) => {
   return (req, res, next) => {
