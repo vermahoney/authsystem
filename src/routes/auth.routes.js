@@ -12,6 +12,14 @@ router.post(
   authController.register
 );
 
+router.post(
+  "/login",
+  validate(authValidation.login),
+  authController.login
+);
+
+
+
 export default router;
 // import {Router} from "express";
 // import * as authController from "../controllers/auth.controller.js";
