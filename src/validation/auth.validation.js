@@ -1,14 +1,21 @@
 import Joi from "joi";
-import { password } from "./custom.validation.js";
 
-const register={
-    body: Joi.object({
-        name: Joi.string().required(),
-        email: Joi.string().required().email(),
-        password: Joi.string().required().custom(password),
-    }),
+const register = {
+  body: Joi.object().keys({
+    name: Joi.string().required(),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
 };
 
-export default{
-    register,
+const login = {
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+};
+
+export default {
+  register,
+  login,
 };
