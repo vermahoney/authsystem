@@ -83,10 +83,28 @@ const findToken = async (token, type) => {
 
   return tokenDoc;
 };
+const refreshAuth = async (refreshToken) => {
+  const payload = await verifyToken(
+    refreshToken,
+    tokenTypes.REFRESH
+  );
+
+  const tokenDoc = await findToken(
+    refreshToken,
+    tokenTypes.REFRESH
+  );
+
+  if (!tokenDoc) {
+    throw new Error("Refresh token not found");
+  }
+
+  return tokenDoc;
+};
 
 export default {
   generateToken,
   generateAuthTokens,
    verifyToken,
    findToken,
+   refreshAuth,
 };
