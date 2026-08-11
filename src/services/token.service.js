@@ -65,7 +65,28 @@ const generateAuthTokens = async (user) => {
   };
 };
 
+const verifyToken = async (token, type) => {
+  const payload = jwt.verify(token, config.jwt.secret);
+
+  if (payload.type !== type) {
+    throw new Error("Invalid token type");
+  }
+
+  return payload;
+};
+const findToken = async (token, type) => {
+  const tokenDoc = await Token.findOne({
+    token,
+    type,
+    blacklisted: false,
+  });
+
+  return tokenDoc;
+};
+
 export default {
   generateToken,
   generateAuthTokens,
+   verifyToken,
+   findToken,
 };
