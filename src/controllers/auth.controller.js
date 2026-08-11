@@ -3,13 +3,32 @@ import catchAsync from "../utils/catchAsync.js";
 import authService from "../services/auth.service.js";
 
 const register = catchAsync(async (req, res) => {
+  const user = await authService.createUser(req.body);
 
+  res.status(httpStatus.CREATED).send({
+    user,
+  });
+});
+
+const login = catchAsync(async (req, res) => {
+  const { email, password } = req.body;
+
+  const { user, tokens } =
+    await authService.loginUserWithEmailAndPassword(
+      email,
+      password
+    );
+
+  res.send({
+    user,
+    tokens,
+  });
 });
 
 export default {
   register,
+  login,
 };
-
 // import UserModel from "../models/user.model.js";
 // import crypto from "crypto";
 // import jwt from "jsonwebtoken";
