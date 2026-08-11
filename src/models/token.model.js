@@ -21,10 +21,11 @@ const tokenSchema = new mongoose.Schema(
       required: true,
     },
 
-    expires: {
-      type: Date,
-      required: true,
-    },
+  expires: {
+  type: Date,
+  required: true,
+  index: { expires: 0 },
+},
 
     blacklisted: {
       type: Boolean,
