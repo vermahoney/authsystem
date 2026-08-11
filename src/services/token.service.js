@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
 import Token from "../models/token.model.js";
+import User from "../models/user.model.js";
 import tokenTypes from "../config/tokens.js";
 
 const generateToken = (
@@ -98,9 +99,20 @@ const refreshAuth = async (refreshToken) => {
     throw new Error("Refresh token not found");
   }
 
-  return tokenDoc;
-};
+  const user = await User.findById(tokenDoc.user);
 
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  await Token.findByIdAndUpdate(tokenDoc._id, {
+    blacklisted: true,
+  });
+
+  const tokens = await generateAuthTokens(user);
+
+  return tokens;
+};
 export default {
   generateToken,
   generateAuthTokens,
