@@ -25,9 +25,20 @@ const login = catchAsync(async (req, res) => {
   });
 });
 
+const refreshTokens = catchAsync(async (req, res) => {
+  const { refreshToken } = req.body;
+
+  const tokens = await authService.refreshAuth(refreshToken);
+
+  res.send({
+    ...tokens,
+  });
+});
+
 export default {
   register,
   login,
+  refreshTokens,
 };
 // import UserModel from "../models/user.model.js";
 // import crypto from "crypto";
