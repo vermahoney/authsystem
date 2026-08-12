@@ -17,6 +17,11 @@ router.post(
   validate(authValidation.login),
   authController.login
 );
+router.post(
+  "/refresh-tokens",
+  validate(authValidation.refreshTokens),
+  authController.refreshTokens
+);
 
 
 

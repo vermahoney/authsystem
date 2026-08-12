@@ -11,7 +11,12 @@ const errorConverter = (err, req, res, next) => {
     const message =
       error.message || httpStatus[statusCode];
 
-    error = new ApiError(statusCode, message, false, err.stack);
+    error = new ApiError(
+      statusCode,
+      message,
+      false,
+      err.stack
+    );
   }
 
   next(error);
@@ -20,10 +25,21 @@ const errorConverter = (err, req, res, next) => {
 const errorHandler = (err, req, res, next) => {
   let { statusCode, message } = err;
 
+  if (!statusCode) {
+    statusCode = httpStatus.INTERNAL_SERVER_ERROR;
+  }
+
+  if (!message) {
+    message = "Internal Server Error";
+  }
+
   res.status(statusCode).json({
     code: statusCode,
     message,
   });
 };
 
-export { errorConverter, errorHandler };
+export {
+  errorConverter,
+  errorHandler,
+};

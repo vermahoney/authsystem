@@ -3,6 +3,8 @@ import config from "../config/config.js";
 import Token from "../models/token.model.js";
 import User from "../models/user.model.js";
 import tokenTypes from "../config/tokens.js";
+import httpStatus from "http-status";
+import ApiError from "../utils/ApiError.js";
 
 const generateToken = (
   userId,
@@ -113,10 +115,32 @@ const refreshAuth = async (refreshToken) => {
 
   return tokens;
 };
+
+const revokeToken = async (refreshToken) => {
+  const tokenDoc = await findToken(
+    refreshToken,
+    tokenTypes.REFRESH
+  );
+
+  if (!tokenDoc) {
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      "Refresh token not found"
+    );
+  }
+
+  tokenDoc.blacklisted = true;
+
+  await tokenDoc.save();
+
+  return tokenDoc;
+};
+
 export default {
   generateToken,
   generateAuthTokens,
    verifyToken,
    findToken,
    refreshAuth,
+   revokeToken,
 };
