@@ -33,8 +33,14 @@ const loginUserWithEmailAndPassword = async (email, password) => {
     tokens,
   };
 };
+const refreshAuth = async (refreshToken) => {
+  const tokens = await tokenService.refreshAuth(refreshToken);
+
+  return tokens;
+};
 
 export default {
   createUser,
   loginUserWithEmailAndPassword,
+  refreshAuth,
 };
