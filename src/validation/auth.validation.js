@@ -20,8 +20,15 @@ const refreshTokens = {
   }),
 };
 
+const logout = {
+  body: Joi.object().keys({
+    refreshToken: Joi.string().required(),
+  }),
+};
+
 export default {
   register,
   login,
   refreshTokens,
+    logout,
 };

@@ -39,8 +39,13 @@ const refreshAuth = async (refreshToken) => {
   return tokens;
 };
 
+const logout = async (refreshToken) => {
+  await tokenService.revokeToken(refreshToken);
+};
+
 export default {
   createUser,
   loginUserWithEmailAndPassword,
   refreshAuth,
+  logout,
 };

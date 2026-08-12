@@ -22,6 +22,11 @@ router.post(
   validate(authValidation.refreshTokens),
   authController.refreshTokens
 );
+router.post(
+  "/logout",
+  validate(authValidation.logout),
+  authController.logout
+);
 
 
 

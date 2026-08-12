@@ -35,11 +35,21 @@ const refreshTokens = catchAsync(async (req, res) => {
   });
 });
 
+const logout = catchAsync(async (req, res) => {
+  const { refreshToken } = req.body;
+
+  await authService.logout(refreshToken);
+
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
 export default {
   register,
   login,
   refreshTokens,
+  logout,
 };
+
 // import UserModel from "../models/user.model.js";
 // import crypto from "crypto";
 // import jwt from "jsonwebtoken";
