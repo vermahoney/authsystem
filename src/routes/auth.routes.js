@@ -2,6 +2,7 @@ import express from "express";
 import validate from "../middlewares/validate.js";
 import authValidation from "../validation/auth.validation.js";
 import authController from "../controllers/auth.controller.js";
+import auth from "../middlewares/auth.js";
 
 
 const router = express.Router();
@@ -21,6 +22,12 @@ router.post(
   "/refresh-tokens",
   validate(authValidation.refreshTokens),
   authController.refreshTokens
+);
+
+router.get(
+  "/me",
+  auth,
+  authController.getMe
 );
 router.post(
   "/logout",

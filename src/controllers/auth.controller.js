@@ -35,6 +35,12 @@ const refreshTokens = catchAsync(async (req, res) => {
   });
 });
 
+const getMe = catchAsync(async (req, res) => {
+  res.send({
+    user: req.user,
+  });
+});
+
 const logout = catchAsync(async (req, res) => {
   const { refreshToken } = req.body;
 
@@ -48,6 +54,7 @@ export default {
   login,
   refreshTokens,
   logout,
+  getMe,
 };
 
 // import UserModel from "../models/user.model.js";
