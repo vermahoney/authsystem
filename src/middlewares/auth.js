@@ -1,42 +1,65 @@
+import passport from "passport";
 import httpStatus from "http-status";
 import ApiError from "../utils/ApiError.js";
-import tokenService from "../services/token.service.js";
-import User from "../models/user.model.js";
-import tokenTypes from "../config/tokens.js";
+import { roleRights } from "../config/roles.js";
 
-const auth = async (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      throw new ApiError(
-        httpStatus.UNAUTHORIZED,
-        "Please authenticate"
-      );
-    }
-
-    const token = authHeader.split(" ")[1];
-
-    const payload = await tokenService.verifyToken(
-      token,
-      tokenTypes.ACCESS
-    );
-
-    const user = await User.findById(payload.sub);
-
-    if (!user) {
-      throw new ApiError(
-        httpStatus.UNAUTHORIZED,
-        "User not found"
+const verifyCallback =
+  (req, resolve, reject, requiredRights) =>
+  async (err, user, info) => {
+    if (err || info || !user) {
+      return reject(
+        new ApiError(
+          httpStatus.UNAUTHORIZED,
+          "Please authenticate"
+        )
       );
     }
 
     req.user = user;
 
-    next();
-  } catch (error) {
-    next(error);
-  }
+    if (requiredRights.length) {
+      const userRights = roleRights.get(user.role) || [];
+
+      const hasRequiredRights = requiredRights.every(
+        (requiredRight) =>
+          userRights.includes(requiredRight)
+      );
+
+      if (
+        !hasRequiredRights &&
+        req.params.userId !== user.id
+      ) {
+        return reject(
+          new ApiError(
+            httpStatus.FORBIDDEN,
+            "Forbidden"
+          )
+        );
+      }
+    }
+
+    resolve();
+  };
+
+const auth = (...requiredRights) => async (
+  req,
+  res,
+  next
+) => {
+  return new Promise((resolve, reject) => {
+    passport.authenticate(
+      "jwt",
+      { session: false },
+      verifyCallback(
+        req,
+        resolve,
+        reject,
+        requiredRights
+      )
+    )(req, res, next);
+  })
+    .then(() => next())
+    .catch((err) => next(err));
 };
 
 export default auth;
