@@ -1,14 +1,16 @@
 import { Router } from "express";
 import User from "../models/user.model.js";
+import auth from "../middlewares/auth.js";
 
 const router = Router();
 
-// Basic test route
-router.get("/", (req, res) => {
-  res.send("User Route");
+router.get("/", auth("getUsers"), (req, res) => {
+  res.send({
+    message: "User Route",
+    user: req.user,
+  });
 });
 
-// Temporary pagination test route
 router.get("/paginate-test", async (req, res, next) => {
   try {
     const result = await User.paginate(
