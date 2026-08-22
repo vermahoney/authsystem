@@ -43,9 +43,14 @@ const logout = async (refreshToken) => {
   await tokenService.revokeToken(refreshToken);
 };
 
+const logoutAll = async (userId) => {
+  await tokenService.revokeTokens(userId);
+};
+
 export default {
   createUser,
   loginUserWithEmailAndPassword,
   refreshAuth,
   logout,
+  logoutAll,
 };
