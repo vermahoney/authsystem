@@ -22,12 +22,22 @@ router.post(
   userController.createUser
 );
 
-
 router.get(
   "/:userId",
   auth("getUsers"),
   userController.getUser
 );
 
+router.patch(
+  "/:userId",
+  auth("manageUsers"),
+  validate(userValidation.updateUser),
+  userController.updateUser
+);
+router.delete(
+  "/:userId",
+  auth("manageUsers"),
+  userController.deleteUser
+);
 
 export default router;

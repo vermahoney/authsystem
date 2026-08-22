@@ -23,8 +23,25 @@ const getUsers = {
     sortBy: Joi.string(),
   }),
 };
+const updateUser = {
+  params: Joi.object().keys({
+    userId: Joi.string().required(),
+  }),
+
+  body: Joi.object()
+    .keys({
+      name: Joi.string().trim(),
+      email: Joi.string().email().trim(),
+      password: Joi.string()
+        .min(8)
+        .pattern(/^(?=.*[A-Za-z])(?=.*\d)/),
+      role: Joi.string().valid("user", "admin"),
+    })
+    .min(1),
+};
 
 export default {
   createUser,
   getUsers,
+  updateUser,
 };
