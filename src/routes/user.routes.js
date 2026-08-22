@@ -1,31 +1,25 @@
 import { Router } from "express";
-import User from "../models/user.model.js";
+
 import auth from "../middlewares/auth.js";
+import validate from "../middlewares/validate.js";
+
+import userController from "../controllers/user.controller.js";
+import userValidation from "../validation/user.validation.js";
 
 const router = Router();
 
-router.get("/", auth("getUsers"), (req, res) => {
-  res.send({
-    message: "User Route",
-    user: req.user,
-  });
-});
+router.get(
+  "/",
+  auth("getUsers"),
+  validate(userValidation.getUsers),
+  userController.getUsers
+);
 
-router.get("/paginate-test", async (req, res, next) => {
-  try {
-    const result = await User.paginate(
-      {},
-      {
-        page: req.query.page,
-        limit: req.query.limit,
-        sortBy: req.query.sortBy,
-      }
-    );
-
-    res.send(result);
-  } catch (error) {
-    next(error);
-  }
-});
+router.post(
+  "/",
+  auth("manageUsers"),
+  validate(userValidation.createUser),
+  userController.createUser
+);
 
 export default router;
