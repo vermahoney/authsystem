@@ -136,6 +136,21 @@ const revokeToken = async (refreshToken) => {
   return tokenDoc;
 };
 
+const revokeTokens = async (userId) => {
+  await Token.updateMany(
+    {
+      user: userId,
+      type: tokenTypes.REFRESH,
+      blacklisted: false,
+    },
+    {
+      $set: {
+        blacklisted: true,
+      },
+    }
+  );
+};
+
 export default {
   generateToken,
   generateAuthTokens,
@@ -143,4 +158,5 @@ export default {
    findToken,
    refreshAuth,
    revokeToken,
+    revokeTokens,
 };
