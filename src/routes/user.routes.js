@@ -22,4 +22,12 @@ router.post(
   userController.createUser
 );
 
+
+router.get(
+  "/:userId",
+  auth("getUsers"),
+  userController.getUser
+);
+
+
 export default router;
